@@ -1,0 +1,32 @@
+name: Auto PR on feature/fix branches
+
+on:
+  push:
+    branches:
+      - "claude/**"
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  create-or-update-pr:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Create or update pull request
+        uses: repo-sync/pull-request@v2
+        with:
+          destination_branch: main
+          pr_title: "Auto PR from ${{ github.ref_name }}"
+          pr_body: |
+            このPRは自動生成されました。
+
+            - 元ブランチ: `${{ github.ref_name }}`
+            - 作成者: `${{ github.actor }}`
+
+            必要に応じて、タイトルや本文を編集してからマージしてください。
+          github_token: ${{ secrets.GITHUB_TOKEN }}
